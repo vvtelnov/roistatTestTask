@@ -2,6 +2,7 @@
 <button
   class="nesting-control-button"
   :class="classAppearingModificator"
+  @click="$emit('nestingControlButtonClicked')"
 >></button>
 </template>
 
@@ -11,8 +12,14 @@ export default {
     classAppearingModificator: {
       type: String,
       required: true,
+      default: '',
     }
   },
+  methods: {
+    // expandBtnClickHandler(evt) {
+      
+    // }
+  }
 }
 </script>
 
@@ -23,6 +30,7 @@ export default {
   font-size: 14px;
   line-height: 1.3;
   font-weight: 400;
+  transform: rotate(90deg);
 }
 
 .nesting-control-button:hover {
@@ -31,14 +39,11 @@ export default {
 }
  
 .nesting-control-button_action_expand {
-  transform: rotate(90deg);
-}
-
-.nesting-control-button_action_hide {
   transform: rotate(0deg);
 }
 
 .nesting-control-button_visibility_hidden {
   visibility: hidden;
 }
+
 </style>

@@ -9,8 +9,9 @@
         :secondCol="row.phone"
         :hasNestedRows="hasNestedRows(row)"
         :marginForNestedLvl="calcMarginForNestedLvl"
+        @toggleNestingRows="toggleIsNestedRowsExpanded"
       />
-      <div v-if="hasNestedRows(row)">
+      <div v-if="hasNestedRows(row) && isNestedRowsExpanded">
         <TableBody :tableRows=row.nested :nestedLvl="nestedLvl + 1" />
       </div>
     </div>
@@ -23,6 +24,11 @@ import TableRow from './TableRow.vue';
 export default {
   name: "TableBody",
   components: { TableRow },
+  data() {
+    return {
+      isNestedRowsExpanded: true,
+    }
+  },
   props: {
     tableRows: {
       type: Array,
@@ -36,6 +42,9 @@ export default {
   methods: {
     hasNestedRows(row) {
       return Boolean(row.nested.length !== 0)
+    },
+    toggleIsNestedRowsExpanded() {
+      this.isNestedRowsExpanded = !this.isNestedRowsExpanded;
     }
   },
   computed: {

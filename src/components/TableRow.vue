@@ -1,7 +1,10 @@
 <template>
     <div class="table__row">
       <div class="table__cell table__cell_first-col" :style="{'width': marginForNestedLvl}">
-        <NestingControlButton :classAppearingModificator="getClassAppearingModificator" class="table__nesting-control-btn"/>
+        <NestingControlButton
+          @nestingControlButtonClicked="nestingControlHandler"
+          :classAppearingModificator="nestingControlButtonClassAppearingModificator"
+          class="table__nesting-control-btn"/>
         {{ firstCol }}
       </div>
       <div class="table__cell table__cell_second-col">
@@ -33,15 +36,27 @@ export default {
       default: '35%'
     },
   },
-  computed: {
-    getClassAppearingModificator() {
-      if (!this.hasNestedRows) {
-        return 'nesting-control-button_visibility_hidden'
-      }
-      return 'nesting-control-button_action_expand'
+  data() {
+    return {
+      nestingControlButtonClassAppearingModificator: 'nesting-control-button_visibility_hidden',
+    };
+  },
+  mounted() {
+    if (this.hasNestedRows) {
+      this.nestingControlButtonClassAppearingModificator = '';
     }
+  },
+  methods: {
+    nestingControlHandler() {
+      if (this.nestingControlButtonClassAppearingModificator === 'nesting-control-button_action_expand') {
+        this.nestingControlButtonClassAppearingModificator = '';
+      } else { 
+        this.nestingControlButtonClassAppearingModificator = 'nesting-control-button_action_expand';
+      }
 
-  }
+      this.$emit('toggleNestingRows')
+    }
+  },
 }
 </script>
 
