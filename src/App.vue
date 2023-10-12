@@ -33,43 +33,49 @@ export default {
       phoneBookNamesAndId: [],
     }
   },
+  mounted() {
+    this.phoneBookRows = JSON.parse(localStorage.getItem('phoneBookRows')) || [];
+    this.phoneBookNamesAndId = JSON.parse(localStorage.getItem('phoneBookNamesAndId')) || [];
+  },
+  watch: {
+    phoneBookRows: {
+      handler(updatedPhoneBookRows) {
+        localStorage.setItem('phoneBookRows', JSON.stringify(updatedPhoneBookRows));
+      },
+      deep: true,
+    },
+    phoneBookNamesAndId: {
+      handler(updatedPhoneBookNamesAndId) {
+        localStorage.setItem('phoneBookNamesAndId', JSON.stringify(updatedPhoneBookNamesAndId));
+      },
+      deep: true,
+    },
+  },
   methods: {
     togglePopup() {
       this.popupOpened = !this.popupOpened;
     },
     addNewPhonebookRow({ name, phone, parent }, currPhoneBookRows = this.phoneBookRows) {
-      // console.log(name, name, parent)
       if (parent === null) {
-        console.log(name, phone, parent)
         this.phoneBookRows.push({
           name,
           phone,
           nested: [],
         })
+      } else if ((currPhoneBookRows[parent.arrIndex]) && (currPhoneBookRows[parent.arrIndex].name === parent.name)) {
+        currPhoneBookRows[parent.arrIndex].nested.push({
+          name,
+          phone,
+          nested: [],
+        })
       } else {
-        // console.log(parent.arrIndex)
-        if ((currPhoneBookRows[parent.arrIndex]) && (currPhoneBookRows[parent.arrIndex].name === parent.name)) {
-          currPhoneBookRows[parent.arrIndex].nested.push({
-            name,
-            phone,
-            nested: [],
-          })
-        } else {
-            for (let i = 0; i < currPhoneBookRows.length; i++) {
-              if (this.phoneBookRows[i].nested.length > 0) {
-                // console.log(name, name, parent)
-                console.log(currPhoneBookRows[i].nested)
-                //   console.log(this.phoneBookRows[0]);
-                //   console.log(this.phoneBookRows[0].nested);
-                // }
-                // console.log(this.phoneBookRows[0].nested.length > 0)
-                this.addNewPhonebookRow({name, phone, parent}, currPhoneBookRows[i].nested);
-              }
+          for (let i = 0; i < currPhoneBookRows.length; i++) {
+            if (this.phoneBookRows[i].nested.length > 0) {
+              this.addNewPhonebookRow({name, phone, parent}, currPhoneBookRows[i].nested);
             }
-          
-        // console.log(this.phoneBookRows);
+          }
         }
-      }
+
       this.phoneBookNamesAndId = [];
       this.updatePhoneBookNamesAndId(this.phoneBookRows);
     },
@@ -83,18 +89,12 @@ export default {
         })
 
         if ((Array.isArray(row.nested)) && (row.nested.length !== 0)) {
-          // console.log(row)
-          // this.phoneBookNamesAndId.push({
-          //   name: row.name,
-          //   id: index,
-          // })
           this.updatePhoneBookNamesAndId(row.nested);
         }
       }
     },
   },
 }
-
 </script>
 
 <style>
